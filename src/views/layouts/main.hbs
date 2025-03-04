@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <script src="https://cdn.tailwindcss.com"></script>
+    <title>{{title}}</title>
+</head>
+<body>
+   <header>
+    <nav class="mx-4 px-16 flex justify-end w-full gap-x-16">
+        <a href="/">home</a>
+        <a href="/post">posts</a>
+        {{#if user}}
+              <a href="/logout">logout</a>
+        {{else}}
+             <a href="/login">login</a>
+        {{/if}}
+        <p>{{user}}</p>
+    </nav>
+   </header>
+
+    {{{body}}}
+</body>
+</html>

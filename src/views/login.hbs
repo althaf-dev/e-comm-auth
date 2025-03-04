@@ -1,0 +1,39 @@
+<section class="flex flex-col py-12 justify-start gap-y-12 items-center h-screen">
+
+  {{#if login}}
+  <h1 class="text-grey-500 text-6xl">Login</h1>
+   <div>
+    <form action='/login?redirect={{redirect}}' method="post">
+  {{else}}
+    <h1 class="text-grey-500 text-6xl">SignUp</h1>
+     <div>
+    <form action='/signup' method="post">
+  {{/if}}
+
+      <div class="my-4">
+        <label for="">User name</label>
+        <input name="username" class="border border-grey-400 block px-4 mt-2 h-[40px] w-[300px] rounded-lg" type="email" placeholder="user name" />
+      </div>
+
+      <div class="my-4">
+        <label for="">Password</label>
+        <input name="password"  class="border border-grey-400 block px-4 mt-2 h-[40px] w-[300px]  rounded-lg"  type="password" placeholder="password" />
+      </div>
+      <div class="flex  gap-4">
+         
+          {{#if login}}
+           <button class="border border-grey-400 rounded-lg px-4 py-2 bg-blue-200" type="submit">Login</button>
+           
+           <a href="/signup"><button type="button" class="border border-grey-400 rounded-lg px-4 py-2 bg-blue-200" > Goto SignUp</button></a>
+          {{else}}
+             <button class="border border-grey-400 rounded-lg px-4 py-2 bg-blue-200" type="submit">Signup</button>
+             <a href="/login"><button type="button" class="border border-grey-400 rounded-lg px-4 py-2 bg-blue-200" >Goto Login</button></a>
+          {{/if}}
+      </div>
+      
+    </form>
+    <a href="/auth"><button  class="mt-8 border border-grey-400 rounded-lg px-4 py-2 bg-yellow-200" >Login with google</button></a>
+      
+  </div>
+
+</section>
