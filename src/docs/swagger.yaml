@@ -1,0 +1,92 @@
+openapi: 3.0.0
+info:
+  title: Auth micro services for E commerce application
+  description:  API documentation for Auth micro services for E commerce application
+  version: 1.0.0
+  contact: 
+    name: Althaf
+    email: althafbandiode@gmail.com
+
+servers:
+  - url: http://localhost:8000
+    description: Local development server
+  - url: https://auth.api.com
+    description: Production server
+
+paths:
+  /login:
+    post:
+      summary: login customers
+      operationId: login
+      tags:
+        - authentication-controller
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequestDTO"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponseDTO"
+        "400":
+          description: Bad request
+  /signup:
+   post:
+      summary: signup customers
+      operationId: signup
+      tags:
+        - authentication-controller
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequestDTO"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponseDTO"
+        "400":
+          description: Bad request
+components:
+  schemas:
+    LoginRequestDTO:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "John Doe"
+        password:
+          type: string
+          example: "12345678"
+      required:
+        - username
+        - password
+    LoginResponseDTO:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          example: "adfdsafxxxxnnmmo23432kmsdsdkfjsdklnf"
+        user:
+          type: object
+          properties:
+            username: 
+              type: string
+              example: "Jhone Doe"
+            email:
+              type: string
+              example: "JhoneDoe@gmail.com"
+            role: 
+              type: string
+              example: "admin"
+        profile:
+          type: string
+          example: "http://localhost:8000/public/profiles/images"

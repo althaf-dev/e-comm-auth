@@ -1,5 +1,5 @@
-const allowedOrigins = process.env.ALLOWEDORIGINS.split(',');
-console.log(allowedOrigins);
+const allowedOrigins = process.env.ALLOWEDORIGINS?.split(',');
+console.log("allowed orogins",allowedOrigins);
 function corsConfig(req, res, next) {
     console.log(req.originalUrl,req.headers.origin)
     try {

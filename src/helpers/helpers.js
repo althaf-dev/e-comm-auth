@@ -41,12 +41,6 @@ function getRedirectURL(req) {
     return req.query?.redirect ? decodeURIComponent(req.query.redirect) : '/';
 }
 
-function validateCredentials(req) {
-    const { username, password } = req.body;
-    if (username === '' || password === '') return false;
-    else return true;
-}
-
 function setAuthCookies(res, accessToken, refreshToken) {
     res.cookie('accessToken', accessToken, {
         httpOnly: true,
@@ -58,14 +52,10 @@ function setAuthCookies(res, accessToken, refreshToken) {
     });
 }
 
-function handleLoginSuccess(req, res, accessToken, user, redirectTo) {
+function handleLoginSuccess(req, res, responseDto, redirectTo) {
     const { accept } = req.headers;
     if (accept === 'application/json')
-        res.status(200).send({
-            accessToken: accessToken,
-            user: user?.username,
-            imageUrl:"http://localhost:8000/public/profiles/1741048192309.jpg"
-        });
+        res.status(200).send(responseDto);
     else res.redirect(redirectTo);
 }
 
@@ -92,7 +82,6 @@ module.exports = {
     generateToken,
     getUser,
     getRedirectURL,
-    validateCredentials,
     setAuthCookies,
     handleLoginSuccess,
     handleSignupSuccess,

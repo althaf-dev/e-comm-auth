@@ -22,9 +22,10 @@ function errorHandler(err, req, res, next) {
             error: err.message,
         });
     } else {
-        res.redirect(
-            `/refresh?redirect=${encodeURIComponent(req.originalUrl)}`
-        );
+        console.log(err)
+        // res.redirect(
+        //     `/refresh?redirect=${encodeURIComponent(req.originalUrl)}`
+        // );
     }
 }
 

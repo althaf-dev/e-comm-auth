@@ -10,10 +10,12 @@ const cors = require("cors")
 const redis = require("redis");
 const connectDB = require("./config/db");
 const corsConfig = require("./config/corsConfig");
-const { default: swaggerDocs } = require("./swagger");
 const { errorHandler } = require("./controllers/errorController");
+const swaggerUi = require("swagger-ui-express");
+const YAML = require("yamljs");
 
 
+const swaggerDocument = YAML.load(path.join(__dirname, ".", "docs", "swagger.yaml"));
 const app = express();
 const PORT = process.env.PORT || 8000;
 
@@ -27,6 +29,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 // x
 app.use(cookieParser());
+
 
 
 connectDB();
@@ -43,11 +46,11 @@ app.use("/public", express.static(path.join(__dirname,"..", "public")));
 app.engine("hbs",engine({extname:"hbs"}));
 app.set("view engine","hbs");
 app.set("views","./src/views");
-
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/api/v1",router);
 
 app.use(errorHandler)
 app.listen(PORT,()=>{
     console.log("server is listening to the port",PORT);
-    swaggerDocs(app,PORT)
+    
 })
