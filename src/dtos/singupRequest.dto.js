@@ -13,7 +13,7 @@ class SignupRequestDTO {
       this.username !== '' &&
       this.password !== '' &&
       this.filename !== '' &&
-      this.password.length > 7
+      this.password.length > 2
     ) {
       return true;
     }

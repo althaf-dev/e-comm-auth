@@ -10,7 +10,7 @@ class LoginRequestDTO {
       typeof this.password === 'string' &&
       this.username !== '' &&
       this.password !== '' &&
-      this.password.length > 7
+      this.password.length > 2
     ) {
       return true;
     }

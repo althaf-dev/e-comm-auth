@@ -20,17 +20,13 @@ const SignupResponseDTO = require('../dtos/signupResponse.dto');
 async function signup(req, res, next) {
   try {
     const signupDto = new SignupRequestDTO(req.body);
-
+    const redirectTo = getRedirectURL(req);
     if (!signupDto.isValid())
       throw new AuthError(AuthError.MESSAGES.INVALIDCREDENTIALS, 400);
-
-    const existingUser = await User.findUserByName(signupDto.username);
-
-    if (existingUser !== -1)
-      throw new AuthError(AuthError.MESSAGES.USEREXIST, 409);
-
-    const data = await User.createUser(signupDto);
+  
+    const data = await authServices.signupUser(signupDto)
     const responseDto = new SignupResponseDTO(data);
+   
     handleSuccessResponse(req, res, responseDto, redirectTo);
   } catch (e) {
     console.log('Signup Error:', e.message);
@@ -51,14 +47,14 @@ async function login(req, res, next) {
     const loginDto = new LoginRequestDTO(req.body);
     const redirectTo = getRedirectURL(req);
 
-    if (!loginDto.isValid())
+    if (!loginDto.isValid()){
       throw new AuthError(AuthError.MESSAGES.INVALIDCREDENTIALS, 400);
-
-    const { user, accessToken, refreshToken, imageUrl } =
-      authServices.loginUser(loginDto);
-
+    }
+    
+    const { user, accessToken, refreshToken, profile} = await authServices.loginUser();
     setAuthCookies(res, accessToken, refreshToken);
-    const responseDto = new LoginResponseDTO(accessToken, user, imageUrl);
+    const responseDto = new LoginResponseDTO(accessToken, user, profile);
+    
     handleSuccessResponse(req, res, responseDto, redirectTo);
   } catch (e) {
     console.log('Login Error:', e.message);

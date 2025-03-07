@@ -1,9 +1,9 @@
 class SignupResponseDTO {
 
-    constructor({ username,role, filename }) {
+    constructor({ username,role, imageUrl }) {
       this.username = username;
       this.role = role;
-      this.profilePic = filename;
+      this.profile = imageUrl;
       this.message = "User added successfully"
     }
   }

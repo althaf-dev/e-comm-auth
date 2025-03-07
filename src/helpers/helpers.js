@@ -55,7 +55,7 @@ function setAuthCookies(res, accessToken, refreshToken) {
 function handleSuccessResponse(req, res, responseDto, redirectTo) {
     const { accept } = req.headers;
     if (accept === 'application/json')
-        res.status(200).send(responseDto);
+        res.status(200).json(responseDto);
     else res.redirect(redirectTo);
 }
 

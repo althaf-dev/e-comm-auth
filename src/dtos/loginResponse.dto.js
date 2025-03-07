@@ -1,6 +1,6 @@
 class LoginResponseDTO {
-  constructor(accesToken, user, imageUrl) {
-    this.accesToken = accesToken;
+  constructor(accessToken, user, imageUrl) {
+    this.accessToken = accessToken;
     this.user = {
       username: user.username,
       email: user.email,
