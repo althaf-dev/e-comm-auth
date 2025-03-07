@@ -52,18 +52,13 @@ function setAuthCookies(res, accessToken, refreshToken) {
     });
 }
 
-function handleLoginSuccess(req, res, responseDto, redirectTo) {
+function handleSuccessResponse(req, res, responseDto, redirectTo) {
     const { accept } = req.headers;
     if (accept === 'application/json')
         res.status(200).send(responseDto);
     else res.redirect(redirectTo);
 }
 
-function handleSignupSuccess(req, res) {
-    if (req.headers['content-type'] === 'application/json')
-        res.status(201).send({ message: 'user created successfully' });
-    else res.redirect('/');
-}
 
 
 function verifyJWT(refreshToken){
@@ -83,7 +78,6 @@ module.exports = {
     getUser,
     getRedirectURL,
     setAuthCookies,
-    handleLoginSuccess,
-    handleSignupSuccess,
+    handleSuccessResponse,
     verifyJWT
 };

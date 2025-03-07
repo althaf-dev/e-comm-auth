@@ -2,8 +2,7 @@ const {
   generateToken,
   getRedirectURL,
   setAuthCookies,
-  handleLoginSuccess,
-  handleSignupSuccess,
+  handleSuccessResponse,
   verifyJWT,
 } = require('../helpers/helpers');
 const User = require('../model/user');
@@ -11,14 +10,16 @@ const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const { AuthError } = require('./errorController');
 require('dotenv').config();
-require('../services/auth');
+require('../services/Oauth');
+const authServices = require('../services/auth.service');
 const LoginRequestDTO = require('../dtos/loginRequest.dto');
 const LoginResponseDTO = require('../dtos/loginResponse.dto');
-const SignupRequestDTO = require("../dtos/singupRequest.dto")
+const SignupRequestDTO = require('../dtos/singupRequest.dto');
+const SignupResponseDTO = require('../dtos/signupResponse.dto');
 
 async function signup(req, res, next) {
   try {
-    const signupDto = new SignupRequestDTO(req.body)
+    const signupDto = new SignupRequestDTO(req.body);
 
     if (!signupDto.isValid())
       throw new AuthError(AuthError.MESSAGES.INVALIDCREDENTIALS, 400);
@@ -29,8 +30,8 @@ async function signup(req, res, next) {
       throw new AuthError(AuthError.MESSAGES.USEREXIST, 409);
 
     const data = await User.createUser(signupDto);
-    handleSignupSuccess(req, res);
-    
+    const responseDto = new SignupResponseDTO(data);
+    handleSuccessResponse(req, res, responseDto, redirectTo);
   } catch (e) {
     console.log('Signup Error:', e.message);
     next(e);
@@ -53,19 +54,12 @@ async function login(req, res, next) {
     if (!loginDto.isValid())
       throw new AuthError(AuthError.MESSAGES.INVALIDCREDENTIALS, 400);
 
-    const user = await User.findUserByName(loginDto.username);
-    if (user === -1) throw new AuthError(AuthError.MESSAGES.USERNOTFOUND, 404);
+    const { user, accessToken, refreshToken, imageUrl } =
+      authServices.loginUser(loginDto);
 
-    if (user.password !== loginDto.password)
-      throw new AuthError(AuthError.MESSAGES.INVALIDPASSWORD, 403);
-
-    const accessToken = generateToken(user, 'Access');
-    const refreshToken = generateToken(user, 'Refresh');
-    const imageUrl = 'http://localhost:8000/public/profiles/1741048192309.jpg';
     setAuthCookies(res, accessToken, refreshToken);
     const responseDto = new LoginResponseDTO(accessToken, user, imageUrl);
-    handleLoginSuccess(req, res, responseDto, redirectTo);
-
+    handleSuccessResponse(req, res, responseDto, redirectTo);
   } catch (e) {
     console.log('Login Error:', e.message);
     next(e);
@@ -157,11 +151,9 @@ function authRedirect(req, res, next) {
 }
 
 function profileImage(req, res, next) {
-  res
-    .status(200)
-    .send({
-      imageUrl: 'http://localhost:8000/public/profiles/1741048192309.jpg',
-    });
+  res.status(200).send({
+    imageUrl: 'http://localhost:8000/public/profiles/1741048192309.jpg',
+  });
 }
 
 module.exports = {
