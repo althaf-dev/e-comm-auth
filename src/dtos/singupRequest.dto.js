@@ -1,8 +1,8 @@
 class SignupRequestDTO {
-  constructor({ username, password,role = "customer", filename }) {
+  constructor({ username, password,role = "customer"},filename="") {
     this.username = username;
     this.password = password;
-    this.filename = filename;
+    this.profile = filename;
     this.role = role
   }
 

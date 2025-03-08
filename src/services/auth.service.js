@@ -1,9 +1,8 @@
 const User = require('../model/user');
+const config = require("../config/config");
 
 async function loginUser(loginDto) {
-  console.log('user:::123', );
   const user = await User.findUserByName(loginDto.username);
-  console.log('user:::', user);
   if (user === -1) throw new AuthError(AuthError.MESSAGES.USERNOTFOUND, 404);
 
   if (user.password !== loginDto.password)
@@ -22,7 +21,7 @@ async function signupUser(signupDto) {
     throw new AuthError(AuthError.MESSAGES.USEREXIST, 409);
 
   const data = await User.createUser(signupDto);
-
-  return { data };
+  const imageUrl = `${config.BASE_URL}/public/profiles/${signupDto.profile}`
+  return { ...signupDto ,profile:imageUrl};
 }
 module.exports = { loginUser,signupUser };

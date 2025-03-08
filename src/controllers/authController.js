@@ -19,15 +19,17 @@ const SignupResponseDTO = require('../dtos/signupResponse.dto');
 
 async function signup(req, res, next) {
   try {
-    const signupDto = new SignupRequestDTO(req.body);
+    
+    const signupDto = new SignupRequestDTO(req.body,req.file.filename);
+    console.log("signDTO",signupDto)
     const redirectTo = getRedirectURL(req);
     if (!signupDto.isValid())
       throw new AuthError(AuthError.MESSAGES.INVALIDCREDENTIALS, 400);
   
     const data = await authServices.signupUser(signupDto)
     const responseDto = new SignupResponseDTO(data);
-   
     handleSuccessResponse(req, res, responseDto, redirectTo);
+
   } catch (e) {
     console.log('Signup Error:', e.message);
     next(e);
