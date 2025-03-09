@@ -1,12 +1,13 @@
 class LoginResponseDTO {
-  constructor(accessToken, user, imageUrl) {
+  constructor(accessToken, user) {
     this.accessToken = accessToken;
     this.user = {
       username: user.username,
       email: user.email,
       role: user.role,
+      profile: user.profile
     };
-    this.profile = imageUrl;
+
   }
 }
 

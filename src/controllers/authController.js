@@ -19,17 +19,16 @@ const SignupResponseDTO = require('../dtos/signupResponse.dto');
 
 async function signup(req, res, next) {
   try {
-    
-    const signupDto = new SignupRequestDTO(req.body,req.file.filename);
-    console.log("signDTO",signupDto)
+    const signupDto = new SignupRequestDTO(req.body, req.file.filename);
     const redirectTo = getRedirectURL(req);
+
     if (!signupDto.isValid())
       throw new AuthError(AuthError.MESSAGES.INVALIDCREDENTIALS, 400);
-  
-    const data = await authServices.signupUser(signupDto)
-    const responseDto = new SignupResponseDTO(data);
-    handleSuccessResponse(req, res, responseDto, redirectTo);
 
+    const response = await authServices.signupUser(signupDto);
+    const responseDto = new SignupResponseDTO(response);
+
+    handleSuccessResponse(req, res, responseDto, redirectTo);
   } catch (e) {
     console.log('Signup Error:', e.message);
     next(e);
@@ -49,14 +48,16 @@ async function login(req, res, next) {
     const loginDto = new LoginRequestDTO(req.body);
     const redirectTo = getRedirectURL(req);
 
-    if (!loginDto.isValid()){
+    if (!loginDto.isValid()) {
       throw new AuthError(AuthError.MESSAGES.INVALIDCREDENTIALS, 400);
     }
-    
-    const { user, accessToken, refreshToken, profile} = await authServices.loginUser();
+
+    const response = await authServices.loginUser(loginDto);
+    const { user, accessToken, refreshToken } = response;
+
     setAuthCookies(res, accessToken, refreshToken);
-    const responseDto = new LoginResponseDTO(accessToken, user, profile);
-    
+    const responseDto = new LoginResponseDTO(accessToken, user);
+
     handleSuccessResponse(req, res, responseDto, redirectTo);
   } catch (e) {
     console.log('Login Error:', e.message);
@@ -89,20 +90,21 @@ function verifyLogin(req, res, next) {
   }
 }
 
-function refreshAuth(req, res) {
+async function refreshAuth(req, res, next) {
   const { refreshToken } = req.cookies;
   const { accept } = req.headers;
   const { redirect } = req.query;
   try {
-    const user = verifyJWT(refreshToken);
+    const { user, accessToken } = await authServices.refresh(refreshToken);
     if (user) {
-      const newAccesToken = generateToken(user, 'Access');
-      setAuthCookies(res, newAccesToken, refreshToken);
-      handleLoginSuccess(req, res, newAccesToken, user, redirect);
+      setAuthCookies(res, accessToken, refreshToken);
+      const responseDto = new LoginResponseDTO(accessToken, user);
+      handleSuccessResponse(req, res, responseDto, redirect);
     }
   } catch (e) {
+    console.log('refresh error:', e);
     if (accept === 'application/json') {
-      throw new AuthError(AuthError.MESSAGES.AUTHFAILED, 401);
+      next(new AuthError(AuthError.MESSAGES.AUTHFAILED, 401));
     } else {
       res.redirect(`/login?redirect=${redirect}`);
     }
@@ -148,11 +150,6 @@ function authRedirect(req, res, next) {
   )(req, res, next);
 }
 
-function profileImage(req, res, next) {
-  res.status(200).send({
-    imageUrl: 'http://localhost:8000/public/profiles/1741048192309.jpg',
-  });
-}
 
 module.exports = {
   signup,
@@ -164,5 +161,4 @@ module.exports = {
   refreshAuth,
   auth,
   authRedirect,
-  profileImage,
 };

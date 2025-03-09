@@ -27,7 +27,6 @@ app.use(corsConfig)
 
 app.use(express.json());
 app.use(express.urlencoded());
-// x
 app.use(cookieParser());
 
 

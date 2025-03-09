@@ -14,7 +14,7 @@ servers:
     description: Production server
 
 paths:
-  /login:
+  /api/v1/login:
     post:
       summary: login customers
       operationId: login
@@ -35,7 +35,7 @@ paths:
                 $ref: "#/components/schemas/LoginResponseDTO"
         "400":
           description: Bad request
-  /signup:
+  /api/v1/signup:
    post:
       summary: signup customers
       operationId: signup
@@ -53,6 +53,20 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SignupResponseDTO"
+        "400":
+          description: Bad request
+  /api/v1/refresh:
+    get:
+      summary: refresh token
+      operationId: refresh token
+      tags:
+        - authentication-controller
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponseDTO"
         "400":
           description: Bad request
 components:
@@ -88,9 +102,9 @@ components:
             role: 
               type: string
               example: "admin"
-        profile:
-          type: string
-          example: "http://localhost:8000/public/profiles/images"
+            profile:
+              type: string
+              example: "http://localhost:8000/public/profiles/images"
     SignupRequestDTO:
      type: object
      properties:

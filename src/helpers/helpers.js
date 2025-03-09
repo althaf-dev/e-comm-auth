@@ -1,22 +1,22 @@
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
+const config = require("../config/config")
 
 function generateToken(user, type) {
     let token;
     if (type === 'Access') {
         token = jwt.sign(
             { userId: user._id.toString(), username: user.username },
-            process.env.ACCESSTOKEN,
+             config.ACCEES_TOKEN_KEY,
             {
                 expiresIn: '1m',
             }
         );
     } else {
         token = jwt.sign(
-            { userId: user._id.toString(),username: user.username  },
-            process.env.REFRESHTOKEN,
+            { userId: user?._id.toString(),username: user.username  },
+             config.REFRESH_TOKEN_KEY,
             {
-                expiresIn: '10m',
+                expiresIn: '10m'
             }
         );
     }
@@ -28,7 +28,7 @@ function getUser(req) {
     const { accessToken } = req.cookies;
     console.log('token from getUser', accessToken);
     try {
-        const decoded = jwt.verify(accessToken, process.env.ACCESSTOKEN);
+        const decoded = jwt.verify(accessToken,config.ACCEES_TOKEN_KEY);
         console.log(decoded);
         if (decoded) return decoded.userName;
         else return null;

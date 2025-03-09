@@ -14,9 +14,9 @@ router.get("/logout", authController.logout);
 router.post("/signup", profileUpload.single('profile'),authController.signup);
 router.post("/login", authController.login);
 router.get("/post", authController.verifyLogin, postController.posts);
-// router.get("/refresh", authController.refreshAuth);
+router.get("/refresh", authController.refreshAuth);
 router.get("/auth", authController.auth);
 router.get("/google/callback", authController.authRedirect);
-router.get("/profile",authController.profileImage)
+
 
 module.exports = router;
