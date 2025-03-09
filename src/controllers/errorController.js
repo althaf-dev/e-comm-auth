@@ -29,4 +29,10 @@ function errorHandler(err, req, res, next) {
     }
 }
 
-module.exports = { errorHandler, AuthError };
+function asyncHandler(fn){
+    return (req,res,next)=>{
+        return Promise.resolve(fn(req,res)).catch(next)
+    }
+}
+
+module.exports = { errorHandler, AuthError,asyncHandler };

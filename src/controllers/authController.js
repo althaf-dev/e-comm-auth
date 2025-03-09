@@ -17,22 +17,16 @@ const LoginResponseDTO = require('../dtos/loginResponse.dto');
 const SignupRequestDTO = require('../dtos/singupRequest.dto');
 const SignupResponseDTO = require('../dtos/signupResponse.dto');
 
-async function signup(req, res, next) {
-  try {
-    const signupDto = new SignupRequestDTO(req.body, req.file.filename);
-    const redirectTo = getRedirectURL(req);
+async function signup(req, res) {
+  const signupDto = new SignupRequestDTO(req.body, req.file.filename);
+  const redirectTo = getRedirectURL(req);
 
-    if (!signupDto.isValid())
-      throw new AuthError(AuthError.MESSAGES.INVALIDCREDENTIALS, 400);
+  if (!signupDto.isValid())
+    throw new AuthError(AuthError.MESSAGES.INVALIDCREDENTIALS, 400);
 
-    const response = await authServices.signupUser(signupDto);
-    const responseDto = new SignupResponseDTO(response);
-
-    handleSuccessResponse(req, res, responseDto, redirectTo);
-  } catch (e) {
-    console.log('Signup Error:', e.message);
-    next(e);
-  }
+  const response = await authServices.signupUser(signupDto);
+  const responseDto = new SignupResponseDTO(response);
+  handleSuccessResponse(req, res, responseDto, redirectTo);
 }
 
 function loginPage(req, res) {
@@ -43,26 +37,18 @@ function signInPage() {
   res.render('login', { login: false });
 }
 
-async function login(req, res, next) {
-  try {
-    const loginDto = new LoginRequestDTO(req.body);
-    const redirectTo = getRedirectURL(req);
+async function login(req, res) {
+  const loginDto = new LoginRequestDTO(req.body);
+  const redirectTo = getRedirectURL(req);
 
-    if (!loginDto.isValid()) {
-      throw new AuthError(AuthError.MESSAGES.INVALIDCREDENTIALS, 400);
-    }
+  if (!loginDto.isValid())
+    throw new AuthError(AuthError.MESSAGES.INVALIDCREDENTIALS, 400);
 
-    const response = await authServices.loginUser(loginDto);
-    const { user, accessToken, refreshToken } = response;
-
-    setAuthCookies(res, accessToken, refreshToken);
-    const responseDto = new LoginResponseDTO(accessToken, user);
-
-    handleSuccessResponse(req, res, responseDto, redirectTo);
-  } catch (e) {
-    console.log('Login Error:', e.message);
-    next(e);
-  }
+  const response = await authServices.loginUser(loginDto);
+  const { user, accessToken, refreshToken } = response;
+  setAuthCookies(res, accessToken, refreshToken);
+  const responseDto = new LoginResponseDTO(accessToken, user);
+  handleSuccessResponse(req, res, responseDto, redirectTo);
 }
 
 function logout(req, res) {
@@ -90,24 +76,15 @@ function verifyLogin(req, res, next) {
   }
 }
 
-async function refreshAuth(req, res, next) {
+async function refreshAuth(req, res) {
   const { refreshToken } = req.cookies;
-  const { accept } = req.headers;
   const { redirect } = req.query;
-  try {
-    const { user, accessToken } = await authServices.refresh(refreshToken);
-    if (user) {
-      setAuthCookies(res, accessToken, refreshToken);
-      const responseDto = new LoginResponseDTO(accessToken, user);
-      handleSuccessResponse(req, res, responseDto, redirect);
-    }
-  } catch (e) {
-    console.log('refresh error:', e);
-    if (accept === 'application/json') {
-      next(new AuthError(AuthError.MESSAGES.AUTHFAILED, 401));
-    } else {
-      res.redirect(`/login?redirect=${redirect}`);
-    }
+  const { user, accessToken } = await authServices.refresh(refreshToken);
+
+  if (user) {
+    setAuthCookies(res, accessToken, refreshToken);
+    const responseDto = new LoginResponseDTO(accessToken, user);
+    handleSuccessResponse(req, res, responseDto, redirect);
   }
 }
 
@@ -149,7 +126,6 @@ function authRedirect(req, res, next) {
     }
   )(req, res, next);
 }
-
 
 module.exports = {
   signup,
