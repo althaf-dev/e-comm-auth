@@ -6,10 +6,10 @@ const s3 = new aws.S3({
   region: process.env.AWS_REGION,
 });
 
-const s3FileUpload = async (file, folder = 'profile-pics') => {
+const s3FileUpload = async (file, folder = 'profile-pics/') => {
   if (!file) return;
 
-  const fileName = `${folder} ${Date.now()} ${file.originalname}`;
+  const fileName = `${folder} ${Date.now()}_${file.originalname}`;
   const upload = await s3
     .upload({
       Bucket: process.env.S3_BUCKET_NAME,
