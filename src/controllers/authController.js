@@ -17,8 +17,11 @@ const LoginRequestDTO = require('../dtos/loginRequest.dto');
 const LoginResponseDTO = require('../dtos/loginResponse.dto');
 const SignupRequestDTO = require('../dtos/singupRequest.dto');
 const SignupResponseDTO = require('../dtos/signupResponse.dto');
+const s3FileUpload = require('../services/s3.service');
 
 async function signup(req, res) {
+
+  console.log("file",req.file);
   const signupDto = new SignupRequestDTO(req.body, req.file.filename);
   const redirectTo = getRedirectURL(req);
 
@@ -26,6 +29,8 @@ async function signup(req, res) {
     throw new AuthError(AuthError.MESSAGES.INVALIDCREDENTIALS, 400);
 
   const response = await authServices.signupUser(signupDto);
+  const imageUrl = await s3FileUpload(req.file);
+  console.log("image url",imageUrl);
   const responseDto = new SignupResponseDTO(response);
   handleSuccessResponse(req, res, responseDto, redirectTo);
 }
