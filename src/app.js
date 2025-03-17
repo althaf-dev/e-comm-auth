@@ -19,8 +19,41 @@ const swaggerDocument = YAML.load(path.join(__dirname, ".", "docs", "swagger.yam
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-const redisClient  = redis.createClient();
-redisClient.connect().catch(console.error);
+// const redisClient  = redis.createClient();
+// const redisClient1  = redis.createClient();
+
+// redisClient1.connect().then(async()=>{
+//     console.log("connected to redis1");
+//     await redisClient1.subscribe("notifications",(message)=>{
+//         console.log("message recived on notification",message)
+//     })
+// })
+// redisClient.connect().then(async()=>{
+//     console.log("connected to redis");
+//     await redisClient.publish("notifications","hello")
+//     await redisClient.publish("notifications","hello everyone!")
+//     // await redisClient.del("notes")
+//     // await redisClient.set("test","testval");
+//     // const val = await redisClient.get("test");
+//     // console.log(val)
+//     // await redisClient.rPush("notes",["note1","note2","note3"]);
+//     // const notes = await redisClient.lRange("notes",0,-1);
+//     // console.log(notes);
+//     // await redisClient.zAdd("cart",[{score:100,value:"cart1"}]);
+//     // const cart = await redisClient.zRange("cart",0,-1);
+//     // console.log(cart);
+//     // const cartwithScores = await redisClient.zRangeWithScores("cart",0,-1);
+//     // console.log(cartwithScores);
+//     // await redisClient.hSet("product1",{
+//     //     name:"product1",
+//     //     price:"100",
+//     //     stock:"10"
+//     // })
+//     // const products = await redisClient.hGetAll("product1");
+//     // console.log(products);
+   
+// }).catch(console.error);
+
 
 app.use(corsConfig)
 // app.use(cors());
@@ -32,13 +65,13 @@ app.use(cookieParser());
 
 
 connectDB();
-app.use(session({
-    store: new RedisStore({client:redisClient , prefix: "myapp:",}),
-    secret: "mySecretKey", // Used to sign the session ID cookie
-    resave: false, // Prevents resaving unchanged sessions
-    saveUninitialized: false, // Saves new sessions without modification
-    cookie: { secure: false, maxAge: 60000 },
-}));
+// app.use(session({
+//     store: new RedisStore({client:redisClient , prefix: "myapp:",}),
+//     secret: "mySecretKey", // Used to sign the session ID cookie
+//     resave: false, // Prevents resaving unchanged sessions
+//     saveUninitialized: false, // Saves new sessions without modification
+//     cookie: { secure: false, maxAge: 60000 },
+// }));
 
 app.use("/public", express.static(path.join(__dirname,"..", "public")));
 

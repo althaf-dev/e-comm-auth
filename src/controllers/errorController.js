@@ -4,7 +4,8 @@ class AuthError extends Error {
         USERNOTFOUND: "user not found !",
         INVALIDPASSWORD: 'invalid username or password',
         USEREXIST: 'user exist',
-        AUTHFAILED: 'Authentication failed'
+        AUTHFAILED: 'Authentication failed',
+        REQUESTLIMIT:"Too many requests. Please try again later"
     };
 
     constructor(message, status) {
