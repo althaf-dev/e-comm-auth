@@ -1,4 +1,4 @@
-const { getUser } = require("../helpers/helpers");
+const { getUser } = require("../utils/helpers");
 
 function posts(req, res) {
   console.log(getUser(req));

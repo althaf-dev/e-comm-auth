@@ -2,17 +2,18 @@ const { rateLimit } = require('express-rate-limit');
 const { RedisStore } = require('rate-limit-redis');
 const Redis = require('ioredis');
 const { AuthError } = require('../controllers/errorController');
+const logger = require('../utils/logger');
 
 const redisClient = new Redis({
   host: '127.0.0.1',
   port: 6379,
 });
 redisClient.on('connect', () => {
-  console.log('✅ Connected to Redis!');
+  logger.info('Connected to Redis!')
 });
 
 redisClient.on('error', (err) => {
-  console.error('❌ Redis connection error:', err);
+  logger.error(' Redis connection error:', err);
 });
 
 function createRateLimiter(window = 1 * 60 * 1000, max = 1) {
@@ -29,6 +30,7 @@ function createRateLimiter(window = 1 * 60 * 1000, max = 1) {
     }),
 
     handler: (req, res, next) => {
+      logger.error(`${req.url} ${req.method} api call limit exceeded`)
       res.status(429).json({
         success: false,
         error: AuthError.MESSAGES.REQUESTLIMIT,

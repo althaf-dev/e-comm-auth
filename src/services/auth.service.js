@@ -1,8 +1,8 @@
 const User = require('../model/user');
 const config = require('../config/config');
-const { generateToken } = require('../helpers/helpers');
+const { generateToken } = require('../utils/helpers');
 const { AuthError } = require('../controllers/errorController');
-const { verifyJWT } = require('../helpers/helpers');
+const { verifyJWT } = require('../utils/helpers');
 
 async function loginUser(loginDto) {
   const user = await User.findUserByName(loginDto.username);

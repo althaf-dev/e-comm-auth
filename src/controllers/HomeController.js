@@ -1,4 +1,4 @@
-const { getUser } = require("../helpers/helpers");
+const { getUser } = require("../utils/helpers");
 
 function Home(req, res) {
   console.log("home::::",getUser(req))

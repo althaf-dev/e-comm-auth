@@ -17,7 +17,6 @@ function corsConfig(req, res, next) {
             throw new Error('not allowed by cors');
         }
     } catch (e) {
-        console.log(e.message);
         next({ status: 403, message: e.message });
     }
 }

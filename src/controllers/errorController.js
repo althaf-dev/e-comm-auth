@@ -1,3 +1,8 @@
+const logger = require("../utils/logger");
+
+
+
+
 class AuthError extends Error {
     static MESSAGES = {
         INVALIDCREDENTIALS: 'required username or password',
@@ -17,13 +22,15 @@ class AuthError extends Error {
 function errorHandler(err, req, res, next) {
    
     const { accept } = req.headers;
-    console.log('erro handler called',err);
+    const {url,method} = req;
+    const user = req.user?req.user.username:"guest";
+    logger.error(`${user}  ${method} ${url} ${err.status}-${err.message}`)
     if (accept === 'application/json' || accept === "*/*") {
         res.status(err.status).send({
             error: err.message,
         });
     } else {
-        console.log(err)
+        // console.log(err)
         // res.redirect(
         //     `/refresh?redirect=${encodeURIComponent(req.originalUrl)}`
         // );

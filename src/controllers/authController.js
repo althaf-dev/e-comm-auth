@@ -4,13 +4,14 @@ const {
   setAuthCookies,
   handleSuccessResponse,
   verifyJWT,
-} = require('../helpers/helpers');
+} = require('../utils/helpers');
 const User = require('../model/user');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const { AuthError } = require('./errorController');
 require('dotenv').config();
 require('../services/Oauth');
+const logger = require("../utils/logger");
 const authServices = require('../services/auth.service');
 const LoginRequestDTO = require('../dtos/loginRequest.dto');
 const LoginResponseDTO = require('../dtos/loginResponse.dto');
@@ -38,6 +39,7 @@ function signInPage() {
 }
 
 async function login(req, res) {
+  
   const loginDto = new LoginRequestDTO(req.body);
   const redirectTo = getRedirectURL(req);
 
