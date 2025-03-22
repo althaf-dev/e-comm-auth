@@ -21,17 +21,17 @@ const s3FileUpload = require('../services/s3.service');
 
 async function signup(req, res) {
 
-  console.log("file",req.file);
   const signupDto = new SignupRequestDTO(req.body, req.file.filename);
   const redirectTo = getRedirectURL(req);
 
   if (!signupDto.isValid())
     throw new AuthError(AuthError.MESSAGES.INVALIDCREDENTIALS, 400);
 
-  const response = await authServices.signupUser(signupDto);
-  const imageUrl = await s3FileUpload(req.file);
-  console.log("image url",imageUrl);
+  const response = await authServices.signupUser(signupDto,req.file);
+  // const imageUrl = await s3FileUpload(req.file);
+  // console.log("image url",imageUrl);
   const responseDto = new SignupResponseDTO(response);
+  // if(imageUrl) responseDto.profile = imageUrl;
   handleSuccessResponse(req, res, responseDto, redirectTo);
 }
 

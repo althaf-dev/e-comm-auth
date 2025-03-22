@@ -3,6 +3,7 @@ const config = require('../config/config');
 const { generateToken } = require('../utils/helpers');
 const { AuthError } = require('../controllers/errorController');
 const { verifyJWT } = require('../utils/helpers');
+const s3FileUpload = require('./s3.service');
 
 async function loginUser(loginDto) {
   const user = await User.findUserByName(loginDto.username);
@@ -25,14 +26,12 @@ async function refresh(refreshToken) {
   }
 }
 
-async function signupUser(signupDto) {
+async function signupUser(signupDto,file) {
   const existingUser = await User.findUserByName(signupDto.username);
   if (existingUser !== -1)
     throw new AuthError(AuthError.MESSAGES.USEREXIST, 409);
-
-  signupDto.profile = `${config.BASE_URL}/public/profiles/${signupDto.profile}`;
+  signupDto.profile = await s3FileUpload(file);;
   const data = await User.createUser(signupDto);
-
   return { ...signupDto, profile: signupDto.profile };
 }
 module.exports = { loginUser, signupUser ,refresh};
