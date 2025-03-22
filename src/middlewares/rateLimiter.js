@@ -5,7 +5,7 @@ const { AuthError } = require('../controllers/errorController');
 const logger = require('../utils/logger');
 
 const redisClient = new Redis({
-  host: '127.0.0.1',
+  host: 'redis',
   port: 6379,
 });
 redisClient.on('connect', () => {

@@ -20,8 +20,8 @@ const swaggerDocument = YAML.load(path.join(__dirname, ".", "docs", "swagger.yam
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-const redisClient  = redis.createClient();
-const redisClient1  = redis.createClient();
+// const redisClient  = redis.createClient();
+// const redisClient1  = redis.createClient();
 
 // redisClient1.connect().then(async()=>{
 //     console.log("connected to redis1");
@@ -66,13 +66,13 @@ app.use(cookieParser());
 
 
 connectDB();
-app.use(session({
-    store: new RedisStore({client:redisClient , prefix: "myapp:",}),
-    secret: "mySecretKey", // Used to sign the session ID cookie
-    resave: false, // Prevents resaving unchanged sessions
-    saveUninitialized: false, // Saves new sessions without modification
-    cookie: { secure: false, maxAge: 60000 },
-}));
+// app.use(session({
+//     store: new RedisStore({client:redisClient , prefix: "myapp:",}),
+//     secret: "mySecretKey", // Used to sign the session ID cookie
+//     resave: false, // Prevents resaving unchanged sessions
+//     saveUninitialized: false, // Saves new sessions without modification
+//     cookie: { secure: false, maxAge: 60000 },
+// }));
 
 app.use("/public", express.static(path.join(__dirname,"..", "public")));
 
