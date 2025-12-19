@@ -53,6 +53,7 @@ async function login(req, res) {
 
   const response = await authServices.loginUser(loginDto);
   const { user, accessToken, refreshToken } = response;
+  console.log("token",accessToken)
   setAuthCookies(res, accessToken, refreshToken);
   const responseDto = new LoginResponseDTO(accessToken, user);
   handleSuccessResponse(req, res, responseDto, redirectTo);

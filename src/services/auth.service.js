@@ -7,6 +7,7 @@ const s3FileUpload = require('./s3.service');
 
 async function loginUser(loginDto) {
   const user = await User.findUserByName(loginDto.username);
+  console.log("user::::::",user)
   if (user === -1) throw new AuthError(AuthError.MESSAGES.USERNOTFOUND, 404);
 
   if (user.password !== loginDto.password)

@@ -19,6 +19,7 @@ const userSchema = new Mongose.Schema({
 const User = Mongose.model("User", userSchema);
 
 async function findUserByName(name) {
+  
   const existingUser = await User.findOne({ username:name});
   if (existingUser) return existingUser;
   return -1;
