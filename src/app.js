@@ -78,7 +78,7 @@ app.use("/public", express.static(path.join(__dirname,"..", "public")));
 
 app.engine("hbs",engine({extname:"hbs"}));
 app.set("view engine","hbs");
-app.set("views","./src/views");
+app.set("views", path.join(__dirname, "views"));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/api/v1",router);
 
